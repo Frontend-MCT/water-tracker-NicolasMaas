@@ -1,0 +1,21 @@
+.c-percentage {
+    text-align: center;
+
+    margin: 1rem 0 7rem;
+
+    .c-percentage__amount {
+        font-size: 6rem;
+
+        &::after {
+            content: '%';
+            font-size: 2rem;
+        }
+    }
+
+    .c-percentage__goal {
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.05rem;
+    }
+}

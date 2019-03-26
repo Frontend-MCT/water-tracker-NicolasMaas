@@ -11,6 +11,14 @@
 
 @import './elements/page.scss';
 
+@import './objects/holder.scss';
+
 // Components go here
+@import './components/app.scss';
+@import './components/time-stamps.scss';
+@import './components/percentage.scss';
+@import './components/button.scss';
+@import './components/wave.scss';
 
 //  Utilities go here
+@import './utilities/depth.scss';

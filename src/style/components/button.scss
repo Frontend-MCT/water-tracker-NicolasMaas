@@ -1,0 +1,39 @@
+.c-button {
+    all: unset;
+
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+
+    padding: .5rem 1.5rem;
+    
+    color: map-get($neutral-colors, light);
+    font-size: 1.1rem;
+
+    border: 3px solid map-get($neutral-colors, light);
+    border-radius: 50px;
+
+    cursor: pointer;
+}
+
+.c-button--icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & .c-button__symbol {
+        height: 1rem;
+        
+        stroke: map-get($neutral-colors, light);
+        stroke-width: .07rem;
+    }
+
+    &:hover {
+        color: $alpha-color;
+        background: map-get($map: $neutral-colors, $key: light);
+
+        & .c-button__symbol {
+            stroke: $alpha-color;
+        }
+    }
+}
