@@ -1,10 +1,11 @@
 class ProgressTracker {
-    constructor (options) {
-        console.log("⚙", options, "⚙");
+    constructor(options) {
+        // console.log("⚙", options, "⚙");
 
         this.options = options;
 
-        this.currentProgress =  [] //dataAccess[this.options.mode].getProgressOfToday() || [];
+        this.percentageValue = 0;
+        this.currentProgress = [] //dataAccess[this.options.mode].getProgressOfToday() || [];
         this.timerId = null;
 
         this.percentageRatio = 100 / this.options.dailyGoal;
@@ -17,17 +18,32 @@ class ProgressTracker {
         this.currentUnitsHolders = document.querySelectorAll(`.${this.options.domRefs.currentUnits}`);
 
         this.showUserOptions();
-        this.updateProgress();
+        this.restoreProgress();
+        this.listenToNewLogging();
     };
 
-    updateProgress(newLogging = [null, 200]) {
-        this.currentProgress.push(newLogging);
-        // this.showTimeStamp(newLogging[0]);
+    restoreProgress() {
+        this.currentProgress = dataAccess[this.options.mode].getProgressByDate(new Date());
 
-        const oldProgress = this.percentage.innerText,
-              newProgress = oldProgress + newLogging[1] * this.percentageRatio;
-        
+        for (const p of this.currentProgress) {
+            this.updateProgress(p);
+        }
+    };
+
+    updateProgress(newLogging = ['00:00', 0]) {
+        // this.currentProgress.push(newLogging);
+        this.showTimeStamp(newLogging[0]);
+
+        const oldProgress = this.percentageValue,
+            newProgress = oldProgress + newLogging[1] * this.percentageRatio;
+
+        this.percentageValue = newProgress;
+
         let v = oldProgress;
+
+        if (this.timerId) {
+            clearInterval(this.timerId);
+        }
 
         this.timerId = setInterval(() => {
             this.percentage.innerText = v;
@@ -35,7 +51,9 @@ class ProgressTracker {
                 clearInterval(this.timerId);
             }
             v++
-        }, 16);
+        }, 32);
+
+        this.options.afterUpdate(newProgress); // When finished, pass the new progress
     };
 
     showUserOptions() {
@@ -46,5 +64,22 @@ class ProgressTracker {
         for (const u of this.currentUnitsHolders) {
             u.innerHTML = this.options.units;
         }
+    };
+
+    showTimeStamp(timeStamp) {
+        this.timeStampHolder.innerHTML += `<li class="c-time-stamp">${timeStamp}</li>`;
+    };
+
+    listenToNewLogging() {
+        this.addButton.addEventListener('click', () => {
+            console.log("💦", this.addButton.dataset.amount, "💦");
+
+            const now = new Date();
+            const time = `${now.getHours()}:${now.getMinutes()}`;
+            const amount = this.addButton.dataset.amount;
+
+            this.updateProgress([time, amount]);
+            // dataAccess[this.options.mode].saveLogging([time, amount]);
+        });
     };
 };
